@@ -1,7 +1,7 @@
 const mqtt = require("mqtt");
 
 // Thông tin kết nối đến MQTT broker
-const brokerUrl = "mqtt://192.168.1.3"; // Địa chỉ IP của máy chủ MQTT
+const brokerUrl = "mqtt://192.168.1.4"; // Địa chỉ IP của máy chủ MQTT
 const topic = "pump/control";
 
 // Kết nối đến broker

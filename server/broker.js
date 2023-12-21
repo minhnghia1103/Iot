@@ -4,7 +4,7 @@ const server = net.createServer(aedes.handle);
 const mqtt = require("mqtt");
 
 const serverOptions = {
-  host: "192.168.1.3", // Địa chỉ IP của máy bạn
+  host: "192.168.1.4", // Địa chỉ IP của máy bạn
   port: 1883, // Cổng MQTT
 };
 

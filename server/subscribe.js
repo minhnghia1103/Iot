@@ -1,7 +1,9 @@
 const mqtt = require("mqtt");
+const { User, DataEsp32 } = require("./config");
+const fs = require("fs");
 
 // Thông tin kết nối đến MQTT broker
-const brokerUrl = "mqtt://192.168.1.3"; // Địa chỉ IP của máy chủ MQTT
+const brokerUrl = "mqtt://192.168.1.4"; // Địa chỉ IP của máy chủ MQTT
 const topic = "esp32/data";
 
 // Kết nối đến broker
@@ -16,9 +18,25 @@ client.on("connect", () => {
 });
 
 // Khi nhận được một tin nhắn từ chủ đề đã đăng ký
-client.on("message", (topic, message) => {
+client.on("message", async (topic, message) => {
   console.log(`Received message from ${topic}: ${message.toString()}`);
-  // Xử lý tin nhắn ở đây
+
+  try {
+    const data = JSON.parse(message.toString());
+
+    // Thêm các trường riêng lẻ vào Firestore
+    await DataEsp32.add({
+      from: data.from,
+      temperature: data.temperature,
+      humidity: data.humidity,
+      lightValue: data.lightValue,
+      earthMoisture: data.earthMoisture,
+    });
+
+    console.log("Data added to Firestore successfully!");
+  } catch (error) {
+    console.error("Error processing message:", error);
+  }
 });
 
 // Xử lý lỗi nếu có
