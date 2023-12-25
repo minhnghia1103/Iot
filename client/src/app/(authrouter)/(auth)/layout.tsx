@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 
 function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
