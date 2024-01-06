@@ -1,11 +1,8 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
-
-import { useAuthState } from "react-firebase-hooks/auth";
-import { useCollectionData } from "react-firebase-hooks/firestore";
 
 firebase.initializeApp({
   apiKey: "AIzaSyADbfN42BeX4wETbiosuMJ5WFrEbR5O7Q4",
@@ -17,19 +14,22 @@ firebase.initializeApp({
   measurementId: "G-7T9NKED8C0",
 });
 
-const auth = firebase.auth();
-const firestore = firebase.firestore();
+export const firestore = firebase.firestore();
 
-type DocumentData = firebase.firestore.DocumentData;
+export type DocumentData = firebase.firestore.DocumentData;
 
 function testFireBase() {
-  const [data, setData] = useState<DocumentData[] | null>(null);
+  const [data, setData] = useState<DocumentData | null>(null);
 
   useEffect(() => {
-    const unsubscribe = firestore.collection("DataEsp32").onSnapshot((snapshot) => {
-      const newData = snapshot.docs.map((doc) => doc.data());
-      setData(newData);
-    });
+    const unsubscribe = firestore
+      .collection("DataEsp32")
+      .orderBy("createdAt", "desc")
+      .limit(1)
+      .onSnapshot((snapshot) => {
+        const newData = snapshot.docs.map((doc) => doc.data())[0];
+        setData(newData);
+      });
 
     // Cleanup function to unsubscribe from the listener when the component unmounts
     return () => unsubscribe();
@@ -38,7 +38,7 @@ function testFireBase() {
   return (
     <div>
       <h1>testFireBase</h1>
-      {data ? data.map((item, index) => <p key={index}>{JSON.stringify(item)}</p>) : <p>Loading...</p>}
+      {data ? <p>{JSON.stringify(data)}</p> : <p>Loading...</p>}
     </div>
   );
 }

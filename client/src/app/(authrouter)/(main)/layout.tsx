@@ -1,5 +1,5 @@
 "use client";
-import { UserAuth } from "@/contexts/AuthContext";
+// import { UserAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -45,7 +45,7 @@ const AppBarItems = [
 function MainLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
-  const { logout, user } = UserAuth();
+  // const { logout, user } = UserAuth();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const handleDrawerToggle = () => {
@@ -77,7 +77,8 @@ function MainLayout({ children }: { children: React.ReactNode }) {
           <Typography style={{ flexGrow: 1 }} />
 
           <Typography className="text-xl select-none">
-            Hello, {user?.displayName}
+            {/* Hello, {user?.displayName} */}
+            Hello
           </Typography>
         </Toolbar>
       </AppBar>
@@ -137,7 +138,7 @@ justify-between h-full
               backgroundColor: "#22c55e",
               padding: "0.5rem",
             }}
-            onClick={logout}
+            // onClick={logout}
           >
             Sign Out
           </Button>

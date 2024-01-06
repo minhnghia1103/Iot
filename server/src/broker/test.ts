@@ -21,5 +21,5 @@ client.on("connect", () => {
 
     client.publish(topic, message);
     console.log(`Published to ${topic}: ${message}`);
-  }, 20000);
+  }, 5000);
 });

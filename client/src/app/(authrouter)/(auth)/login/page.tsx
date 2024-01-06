@@ -4,9 +4,9 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Button, IconButton, InputAdornment, TextField } from "@mui/material";
 import Link from "next/link";
 import { useState } from "react";
-import { UserAuth } from "@/contexts/AuthContext";
+// import { UserAuth } from "@/contexts/AuthContext";
 function Login() {
-  const { googleSignIn } = UserAuth();
+  // const { googleSignIn } = UserAuth();
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
@@ -56,7 +56,7 @@ function Login() {
         className="w-full "
         variant="contained"
         color="primary"
-        onClick={googleSignIn}
+        // onClick={googleSignIn}
         style={{
           marginBottom: "0.5rem",
           color: "black",
