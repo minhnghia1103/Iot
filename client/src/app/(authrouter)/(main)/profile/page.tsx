@@ -21,10 +21,10 @@ function Dashboard() {
           <div className="bg-blue-100 p-4 rounded-md">
             <h3 className="text-xl font-semibold mb-4">Personal Information</h3>
             <p>
-              <span className="font-semibold">Username:</span> john_doe
+              <span className="font-semibold">Username:</span> Hung lai
             </p>
             <p>
-              <span className="font-semibold">Date of Birth:</span> January 1, 1990
+              <span className="font-semibold">Date of Birth:</span> January 1, 2002
             </p>
             <p>
               <span className="font-semibold">Gender:</span> Male
@@ -33,13 +33,13 @@ function Dashboard() {
           <div className="bg-green-100 p-4 rounded-md">
             <h3 className="text-xl font-semibold mb-4">Contact Information</h3>
             <p>
-              <span className="font-semibold">Email:</span> john.doe@example.com
+              <span className="font-semibold">Email:</span> chuquanpho@gmail.com
             </p>
             <p>
-              <span className="font-semibold">Phone:</span> +1 (555) 123-4567
+              <span className="font-semibold">Phone:</span> 7777777777
             </p>
             <p>
-              <span className="font-semibold">Address:</span> 123 Main Street, Cityville
+              <span className="font-semibold">Address:</span> Thai Binh
             </p>
           </div>
         </div>
