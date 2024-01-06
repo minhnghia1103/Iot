@@ -10,7 +10,7 @@
 // } from "firebase/auth";
 // import { auth } from "@/firebase";
 // import { useRouter } from "next/navigation";
-
+    
 // const AuthContext = createContext(
 //   {} as {
 //     user: UserType;

@@ -13,12 +13,13 @@ import {
   Dispatch,
   MutableRefObject,
   SetStateAction,
+  useContext,
   useEffect,
   useRef,
   useState,
 } from "react";
-import { firestore, DocumentData } from "../testFireBase/page";
-import firebase from "firebase/compat/app";
+import { firestore } from "../testFireBase/page";
+import { MqttContext } from "@/contexts/MqttContext";
 
 const datasetOptions = {
   label: "Dataset 1",
@@ -28,6 +29,7 @@ const datasetOptions = {
 };
 
 function Dashboard() {
+  const { mqttClient } = useContext(MqttContext);
   const xLabelNumber = 10;
 
   const xTempDataRef = useRef<string[]>(
@@ -149,6 +151,10 @@ function Dashboard() {
     });
   };
   useEffect(() => {
+    mqttClient?.subscribe("from-esp32");
+    mqttClient?.on("message", (topic, payload) => {
+      console.log("topic: ", topic, "payload: ", payload.toString());
+    });
     const unsubscribe = firestore
       .collection("DataEsp32")
       .orderBy("createdAt", "desc")
