@@ -8,15 +8,15 @@ function AuthRouterLayout({ children }: { children: React.ReactNode }) {
   const { user } = UserAuth();
   console.log("user::", user);
   console.log("router::", pathname);
-  useEffect(() => {
-    if (user) {
-      if (pathname === "/login") {
-        router.push("/dashboard");
-      }
-    } else {
-      router.push("/login");
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   if (user) {
+  //     if (pathname === "/login") {
+  //       router.push("/dashboard");
+  //     }
+  //   } else {
+  //     router.push("/login");
+  //   }
+  // }, [user]);
 
   return <div>{children}</div>;
 }

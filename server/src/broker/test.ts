@@ -1,22 +1,25 @@
-import mqtt from "mqtt";
+const mqtt = require("mqtt");
 import { getIPAddress } from "./func";
-
 const brokerUrl = `mqtt://${getIPAddress()}`;
-const topicDataEsp32 = "control";
+const topic = "esp32/data";
+const client = mqtt.connect(brokerUrl);
 
-// Kết nối đến broker
-export const clientDataEsp32 = mqtt.connect(brokerUrl);
+client.on("connect", () => {
+  console.log("Connected to MQTT broker");
 
-// Khi kết nối thành công
-clientDataEsp32.on("connect", () => {
-  console.log("Connected to MQTT broker at " + brokerUrl);
-  // Đăng ký để nhận tin nhắn từ chủ đề đã chọn
-  clientDataEsp32.subscribe(topicDataEsp32);
-});
-clientDataEsp32.on("message", async (topic, message) => {
-  console.log(`Received message from ${topic}: ${message.toString()}`);
-});
-// Xử lý lỗi nếu có
-clientDataEsp32.on("error", (err) => {
-  console.error(`Error: ${err}`);
+  // Gửi tin nhắn JSON đến chủ đề đã chọn
+  setInterval(() => {
+    const data = {
+      from: "esp32",
+      temperature: 24.20000076,
+      humidity: 81,
+      lightValue: 11.66666603,
+      earthMoisture: 0,
+    };
+
+    const message = JSON.stringify(data);
+
+    client.publish(topic, message);
+    console.log(`Published to ${topic}: ${message}`);
+  }, 20000);
 });
