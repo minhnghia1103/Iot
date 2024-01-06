@@ -1,35 +1,20 @@
 import express from "express";
-import { Server } from "socket.io";
-import { createServer } from "node:http";
-// import mqtt from "mqtt";
-import mqtt from "mqtt";
-import { getIPAddress } from "./func";
-import { protocol } from "engine.io-parser";
-import { client as mqttClient } from "./mqtt";
+import "./broker/mqtt";
+import { clineData, fromControlEsp32 } from "./broker/subscribe";
+import { control } from "./broker/mqtt";
+import { updateControl } from "./controller/controllerDump";
+
 const app = express();
-const server = createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: "*", // Allow all origins
-  },
-});
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 
-// Thông tin kết nối đến MQTT broker
+app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors({ credentials: true, origin: true }));
+app.use(cookieParser());
 
-io.on("connection", (socket) => {
-  console.log("A user connected");
-  mqttClient.on("message", (topic, message) => {
-    console.log(`Received from ${topic}: ${message}`);
-    socket.emit("mqtt-message", { topic, message: message.toString() });
-  });
-  socket.on("disconnect", () => {
-    console.log("A user disconnected");
-  });
-});
-
-app.get("/", (req, res) => {
-  res.send("Hello World");
-});
-server.listen(3000, () => {
-  console.log("Server is running on port 3000");
-});
+clineData();
+fromControlEsp32();
+app.put("/updateControl", updateControl);
+app.listen(8080);
