@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import {
   Card,
   CardContent,
@@ -8,34 +8,44 @@ import {
   Switch,
   Button,
 } from "@mui/material";
-import { yellow, blue, grey, brown } from "@mui/material/colors";
+import { yellow, blue } from "@mui/material/colors";
 import WbSunnyIcon from "@mui/icons-material/WbSunny";
-import CloudIcon from "@mui/icons-material/Cloud";
-import LightModeIcon from "@mui/icons-material/LightMode";
 import WaterDropIcon from "@mui/icons-material/WaterDrop";
 
 function Control() {
   const controlData = [
-    { title: "Temperature", unit: "°C", color: yellow[400], icon: <WbSunnyIcon /> },
-    { title: "Air Humidity", unit: "%", color: blue[400], icon: <CloudIcon /> },
-    { title: "Light", unit: "lx", color: grey[400], icon: <LightModeIcon /> },
-    { title: "Soil Moisture", unit: "%", color: brown[400], icon: <WaterDropIcon /> },
+    { title: "Light", unit: "°C", color: yellow[400], icon: <WbSunnyIcon /> },
+    { title: "Pump", unit: "%", color: blue[400], icon: <WaterDropIcon /> },
   ];
 
-  const [allSwitchesState, setAllSwitchesState] = useState(
-    controlData.reduce((acc, curr, index) => ({ ...acc, [index]: false }), {})
-  );
+  const [allSwitchesState, setAllSwitchesState] = useState<
+    Record<number, boolean>
+  >(controlData.reduce((acc, _, index) => ({ ...acc, [index]: false }), {}));
 
-  const handleSwitchChange = (index) => {
-    setAllSwitchesState((prevState) => ({ ...prevState, [index]: !prevState[index] }));
+  const [autoSwitchesState, setAutoSwitchesState] = useState<
+    Record<number, boolean>
+  >(controlData.reduce((acc, _, index) => ({ ...acc, [index]: false }), {}));
+
+  const handleSwitchChange = (
+    index: number,
+    setState: Dispatch<SetStateAction<Record<number, boolean>>>
+  ) => {
+    setState((prevState) => ({
+      ...prevState,
+      [index]: !prevState[index],
+    }));
   };
 
   const handleTurnAllOn = () => {
-    setAllSwitchesState((prevState) => Object.fromEntries(Object.keys(prevState).map((key) => [key, true])));
+    setAllSwitchesState((prevState) =>
+      Object.fromEntries(Object.keys(prevState).map((key) => [key, true]))
+    );
   };
 
   const handleTurnAllOff = () => {
-    setAllSwitchesState((prevState) => Object.fromEntries(Object.keys(prevState).map((key) => [key, false])));
+    setAllSwitchesState((prevState) =>
+      Object.fromEntries(Object.keys(prevState).map((key) => [key, false]))
+    );
   };
 
   const isAllOn = Object.values(allSwitchesState).every((value) => value);
@@ -43,7 +53,7 @@ function Control() {
 
   return (
     <div className="flex flex-col items-center" style={{ marginTop: "50px" }}>
-      <div className="flex flex-row space-x-4 flex-wrap justify-around mb-4">
+      <div className="flex flex-row space-x-12 flex-wrap justify-around mb-4">
         {controlData.map((control, index) => (
           <ControlCard
             key={index}
@@ -52,72 +62,156 @@ function Control() {
             color={control.color}
             icon={control.icon}
             switchState={allSwitchesState[index]}
-            onSwitchChange={() => handleSwitchChange(index)}
+            autoSwitchState={autoSwitchesState[index]}
+            onSwitchChange={() =>
+              handleSwitchChange(index, setAllSwitchesState)
+            }
+            onAutoSwitchChange={() =>
+              handleSwitchChange(index, setAutoSwitchesState)
+            }
           />
         ))}
       </div>
 
-      <div className="flex space-x-4">
-        <Button variant="contained" style={{ backgroundColor: isAllOn ? blue[500] : "inherit", color: isAllOn ? "#fff" : "inherit" }} onClick={handleTurnAllOn}>
-          Bật hết
+      <div className="flex space-x-12">
+        <Button
+          variant="contained"
+          style={{
+            backgroundColor: isAllOn ? blue[500] : "inherit",
+            color: isAllOn ? "#fff" : "inherit",
+          }}
+          onClick={handleTurnAllOn}
+        >
+          Turn on all
         </Button>
-        <Button variant="contained" style={{ backgroundColor: isAllOff ? "red" : "inherit", color: isAllOff ? "#fff" : "inherit" }} onClick={handleTurnAllOff}>
-          Tắt hết
+        <Button
+          variant="contained"
+          style={{
+            backgroundColor: isAllOff ? "red" : "inherit",
+            color: isAllOff ? "#fff" : "inherit",
+          }}
+          onClick={handleTurnAllOff}
+        >
+          Turn off all
         </Button>
       </div>
     </div>
   );
 }
 
-export const ControlCard = ({ title, unit, color, icon, switchState, onSwitchChange }) => (
+export const ControlCard = ({
+  title,
+  unit,
+  color,
+  icon,
+  switchState,
+  autoSwitchState,
+  onSwitchChange,
+  onAutoSwitchChange,
+}: {
+  title: string;
+  unit: string;
+  color: string;
+  icon: any;
+  switchState: boolean;
+  autoSwitchState: boolean;
+  onAutoSwitchChange: (index: number) => void;
+  onSwitchChange: (index: number) => void;
+}) => (
   <Card sx={{ minWidth: 275 }} className="relative">
     <CardContent
       sx={{
         backgroundColor: color,
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
       }}
     >
       <Typography sx={{ mb: 1.5 }} color="text.secondary">
-        {icon} {title}
+        <div>{icon}</div>
+        <div className="text-2xl">{title}</div>
       </Typography>
-      <Typography variant="body2">
-        <span className="text-4xl">30</span>
-        <span className="text-xl">{unit}</span>
-      </Typography>
+      <div className="flex flex-col items-center">
+        <Switch
+          checked={switchState}
+          onChange={onSwitchChange}
+          sx={{
+            height: 40,
+            width: 60,
+            "& .MuiSwitch-switchBase.Mui-checked": {
+              color: "#fff",
+              "& + .MuiSwitch-track": {
+                backgroundColor: "#FF7F50",
+                opacity: 1,
+              },
+            },
+            "& .MuiSwitch-thumb": {
+              width: 22,
+              height: 22,
+            },
+            "& .MuiSwitch-track": {
+              borderRadius: 26 / 2,
+              backgroundColor: "#bdbdbd",
+              opacity: 1,
+              width: 50, // Increase this to increase the width of the switch
+            },
+          }}
+        />
+        <Typography
+          variant="body2"
+          sx={{
+            ml: 1,
+            color: switchState ? "#FF7F50" : "#bdbdbd",
+            userSelect: "none",
+            cursor: "pointer",
+          }}
+          onClick={onSwitchChange}
+        >
+          {switchState ? "On" : "Off"}
+        </Typography>
+      </div>
     </CardContent>
-    <CardActions>
-      <Switch
-        checked={switchState}
-        onChange={onSwitchChange}
-        sx={{
-          "& .MuiSwitch-switchBase.Mui-checked": {
-            color: "#fff",
-            "& + .MuiSwitch-track": {
-              backgroundColor: "#4dd0e1",
+    <CardActions className="flex flex-row justify-between">
+      <div className="flex flex-col items-center w-full">
+        <Switch
+          checked={autoSwitchState}
+          onChange={onAutoSwitchChange}
+          sx={{
+            height: 40,
+            width: 60,
+            "& .MuiSwitch-switchBase.Mui-checked": {
+              color: "#fff",
+              "& + .MuiSwitch-track": {
+                backgroundColor: "#4dd0e1",
+                opacity: 1,
+              },
+            },
+            "& .MuiSwitch-thumb": {
+              width: 22,
+              height: 22,
+            },
+            "& .MuiSwitch-track": {
+              borderRadius: 26 / 2,
+              backgroundColor: "#bdbdbd",
               opacity: 1,
             },
-          },
-          "& .MuiSwitch-thumb": {
-            width: 24,
-            height: 24,
-          },
-          "& .MuiSwitch-track": {
-            borderRadius: 26 / 2,
-            backgroundColor: "#bdbdbd",
-            opacity: 1,
-          },
-        }}
-      />
-      <Typography variant="body2" sx={{ ml: 1, color: switchState ? "#4dd0e1" : "#bdbdbd" }}>
-        {switchState ? "Bật" : "Tắt"}
-      </Typography>
+          }}
+        />
+        <Typography
+          variant="body2"
+          sx={{
+            ml: 1,
+            color: autoSwitchState ? "#4dd0e1" : "#bdbdbd",
+            userSelect: "none",
+            cursor: "pointer",
+          }}
+          onClick={onAutoSwitchChange}
+        >
+          Auto
+        </Typography>
+      </div>
     </CardActions>
   </Card>
 );
 
 export default Control;
-
-
-
-
-
-

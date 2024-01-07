@@ -14,7 +14,8 @@ export const MqttContext = createContext<{
   mqttUnSub: () => {},
   mqttDisconnect: () => {},
 });
-const brokerUrl = `ws://192.168.1.7:8883`;
+const ipAddr = "192.168.1.7";
+const brokerUrl = `ws://${ipAddr}:8883`;
 
 export const dataTopic = "esp32/data";
 export const controlTopic = "control";
