@@ -1,25 +1,28 @@
-const mqtt = require("mqtt");
+import mqtt from "mqtt";
 import { getIPAddress } from "./func";
+
 const brokerUrl = `mqtt://${getIPAddress()}`;
-const topic = "esp32/data";
-const client = mqtt.connect(brokerUrl);
+const topicfromEsp32 = "esp32/data";
 
-client.on("connect", () => {
-  console.log("Connected to MQTT broker");
+console.log(brokerUrl);
 
-  // Gửi tin nhắn JSON đến chủ đề đã chọn
-  setInterval(() => {
-    const data = {
+function getRandomInt(min: number, max: number) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+export const clientDataEsp32 = mqtt.connect(brokerUrl);
+setInterval(() => {
+  clientDataEsp32.publish(
+    topicfromEsp32,
+    JSON.stringify({
       from: "esp32",
-      temperature: 24.20000076,
-      humidity: 81,
-      lightValue: 11.66666603,
-      earthMoisture: 0,
-    };
-
-    const message = JSON.stringify(data);
-
-    client.publish(topic, message);
-    console.log(`Published to ${topic}: ${message}`);
-  }, 5000);
-});
+      temperature: getRandomInt(20, 30),
+      humidity: getRandomInt(50, 100),
+      lightValue: getRandomInt(0, 100),
+      earthMoisture: getRandomInt(0, 100),
+      createdAt: new Date().getTime(),
+    })
+  );
+}, 2000);

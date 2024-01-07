@@ -1,7 +1,6 @@
 import express from "express";
 import "./broker/mqtt";
 import { clineData, fromControlEsp32 } from "./broker/subscribe";
-import { control } from "./broker/mqtt";
 import { updateControl } from "./controller/controllerDump";
 
 const app = express();
