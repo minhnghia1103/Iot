@@ -105,12 +105,12 @@ export const updateControl = async (message: any) => {
           }
         }
       }
-    } else if (ledAutoModeStatus === 0 && pumpAutoModeStatus === 1) {
+    } else if (ledAutoModeStatus === 0 && pumpAutoModeStatus === 1 && data.hasOwnProperty("name")) {
       if (ledStatus !== ledStatusControl) {
         console.log(ledStatus === 1 ? "Bật đèn" : "Tắt đèn");
         await addActionToHistory(ledStatus === 1 ? "Bật đèn" : "Tắt đèn");
       }
-    } else if (ledAutoModeStatus === 1 && pumpAutoModeStatus === 0) {
+    } else if (ledAutoModeStatus === 1 && pumpAutoModeStatus === 0 && data.hasOwnProperty("name")) {
       if (pumpStatus !== pumpStatusControl) {
         console.log(pumpStatus === 1 ? "Bật bơm nước" : "Tắt bơm nước");
         await addActionToHistory(pumpStatus === 1 ? "Bật bơm nước" : "Tắt bơm nước");

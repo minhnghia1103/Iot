@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors({ credentials: true, origin: true }));
 app.use(cookieParser());
 
-clineData();
+// clineData();
 fromControlEsp32();
 // app.put("/updateControl", updateControl);
 app.post("/register", createUser);
