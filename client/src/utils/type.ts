@@ -14,3 +14,8 @@ export type LineDataType = {
     data: number[];
   }[];
 };
+
+export type UserType = {
+  fullname: string;
+  accessToken: string;
+};

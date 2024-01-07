@@ -4,8 +4,6 @@ import { getIPAddress } from "./func";
 const brokerUrl = `mqtt://${getIPAddress()}`;
 const topicfromEsp32 = "esp32/data";
 
-console.log(brokerUrl);
-
 function getRandomInt(min: number, max: number) {
   min = Math.ceil(min);
   max = Math.floor(max);

@@ -6,6 +6,8 @@ import { Skeleton } from "@mui/material";
 export const LineCharts = () => {
   const { tempLineData, humidLineData, lightLineData, moiLineData } =
     useContext(DashboardContext);
+
+  console.log("tempLineData", tempLineData);
   return (
     <div className="flex flex-row space-x-4 flex-wrap justify-around">
       {tempLineData ? (
