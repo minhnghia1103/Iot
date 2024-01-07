@@ -52,23 +52,6 @@ function Login() {
       >
         Login
       </Button>
-      <Button
-        className="w-full "
-        variant="contained"
-        color="primary"
-        // onClick={googleSignIn}
-        style={{
-          marginBottom: "0.5rem",
-          color: "black",
-          backgroundColor: "white",
-          padding: "0.5rem",
-        }}
-      >
-        <div className="flex flex-row ">
-          <GoogleIcon />
-          <span className="ml-2">Login with Google</span>
-        </div>
-      </Button>
       <Link
         href="register"
         className="mt-4 inline-block text-base text-black align-baseline hover:text-green-800 w-full text-center"

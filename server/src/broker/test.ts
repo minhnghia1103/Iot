@@ -1,5 +1,6 @@
-const mqtt = require("mqtt");
+import mqtt from "mqtt";
 import { getIPAddress } from "./func";
+
 const brokerUrl = `mqtt://${getIPAddress()}`;
 const topic = "control";
 const client = mqtt.connect(brokerUrl);

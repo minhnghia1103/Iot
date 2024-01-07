@@ -14,22 +14,21 @@ export const MqttContext = createContext<{
   mqttUnSub: () => {},
   mqttDisconnect: () => {},
 });
-const brokerUrl = `ws://192.168.1.7:8883`;
+const ipAddr = "192.168.1.11";
+const brokerUrl = `ws://${ipAddr}:8883`;
 
-export const MqttContextProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
-  const [mqttClient, setMqttClient] = useState<MqttClient | null>(
-    mqtt.connect(brokerUrl)
-  );
+export const dataTopic = "esp32/data";
+export const controlTopic = "control";
+export const MqttContextProvider = ({ children }: { children: React.ReactNode }) => {
+  const [mqttClient, setMqttClient] = useState<MqttClient | null>(mqtt.connect(brokerUrl));
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     if (mqttClient) {
       mqttClient.on("connect", () => {
         console.log("Connected to MQTT broker at " + brokerUrl);
         setLoading(false);
+        mqttSub({ topic: dataTopic, qos: 0 });
+        mqttSub({ topic: controlTopic, qos: 0 });
       });
       mqttClient.on("error", (err) => {
         console.error(`Error: ${err}`);
@@ -42,7 +41,9 @@ export const MqttContextProvider = ({
     if (mqttClient && mqttClient.connected) {
       // topic, QoS & payload for publishing message
       const { topic, qos, payload } = context;
-      mqttClient.publish(topic, payload, { qos }, (error) => {
+      console.log("Publishing message:", context);
+      console.log(topic, payload);
+      mqttClient.publish(topic, JSON.stringify(payload), { qos }, (error) => {
         if (error) {
           console.log("Publish error: ", error);
         }
@@ -55,7 +56,6 @@ export const MqttContextProvider = ({
       // topic & QoS for MQTT subscribing
       const { topic, qos } = subscription;
       // subscribe topic
-      // https://github.com/mqttjs/MQTT.js#mqttclientsubscribetopictopic-arraytopic-object-options-callback
       mqttClient.subscribe(topic, { qos }, (error) => {
         if (error) {
           console.log("Subscribe to topics error", error);
