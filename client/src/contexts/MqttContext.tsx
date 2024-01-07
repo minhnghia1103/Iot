@@ -16,6 +16,8 @@ export const MqttContext = createContext<{
 });
 const brokerUrl = `ws://192.168.1.7:8883`;
 
+export const dataTopic = "esp32/data";
+export const controlTopic = "control";
 export const MqttContextProvider = ({
   children,
 }: {
@@ -30,6 +32,8 @@ export const MqttContextProvider = ({
       mqttClient.on("connect", () => {
         console.log("Connected to MQTT broker at " + brokerUrl);
         setLoading(false);
+        mqttSub({ topic: dataTopic, qos: 0 });
+        mqttSub({ topic: controlTopic, qos: 0 });
       });
       mqttClient.on("error", (err) => {
         console.error(`Error: ${err}`);
@@ -55,7 +59,6 @@ export const MqttContextProvider = ({
       // topic & QoS for MQTT subscribing
       const { topic, qos } = subscription;
       // subscribe topic
-      // https://github.com/mqttjs/MQTT.js#mqttclientsubscribetopictopic-arraytopic-object-options-callback
       mqttClient.subscribe(topic, { qos }, (error) => {
         if (error) {
           console.log("Subscribe to topics error", error);

@@ -19,7 +19,7 @@ import {
   useState,
 } from "react";
 import { firestore } from "../testFireBase/page";
-import { MqttContext } from "@/contexts/MqttContext";
+import { MqttContext, dataTopic } from "@/contexts/MqttContext";
 
 const datasetOptions = {
   label: "Dataset 1",
@@ -130,7 +130,7 @@ function Dashboard() {
     );
   };
   const setData = (
-    subFirestoreData: {
+    subData: {
       createdAt: number;
       data: number;
     },
@@ -138,8 +138,8 @@ function Dashboard() {
     ref2: MutableRefObject<string[]>,
     setState: Dispatch<SetStateAction<any>>
   ) => {
-    generateTimeLabels(subFirestoreData.createdAt, ref2);
-    pushData(subFirestoreData.data, ref1);
+    generateTimeLabels(subData.createdAt, ref2);
+    pushData(subData.data, ref1);
     setState({
       labels: ref2.current,
       datasets: [
@@ -151,48 +151,39 @@ function Dashboard() {
     });
   };
   useEffect(() => {
-    mqttClient?.subscribe("from-esp32");
     mqttClient?.on("message", (topic, payload) => {
-      console.log("topic: ", topic, "payload: ", payload.toString());
+      if (topic === dataTopic) {
+        const newData = JSON.parse(payload.toString());
+        console.log(newData);
+        setData(
+          { createdAt: newData.createdAt, data: newData.temperature },
+          yTempDataRef,
+          xTempDataRef,
+          setTempLineData
+        );
+        setData(
+          { createdAt: newData.createdAt, data: newData.humidity },
+          yHumidDataRef,
+          xHumidDataRef,
+          setHumidLineData
+        );
+        setData(
+          { createdAt: newData.createdAt, data: newData.lightValue },
+          yLightDataRef,
+          xLightDataRef,
+          setLightLineData
+        );
+        setData(
+          {
+            createdAt: newData.createdAt,
+            data: newData.earthMoisture,
+          },
+          yMoiDataRef,
+          xMoiDataRef,
+          setMoiLineData
+        );
+      }
     });
-    const unsubscribe = firestore
-      .collection("DataEsp32")
-      .orderBy("createdAt", "desc")
-      .limit(1)
-      .onSnapshot(async (snapshot) => {
-        const newData = snapshot.docs.map((doc) => doc.data())[0];
-        console.log(newData.createdAt);
-        if (newData) {
-          setData(
-            { createdAt: newData.createdAt, data: newData.temperature },
-            yTempDataRef,
-            xTempDataRef,
-            setTempLineData
-          );
-          setData(
-            { createdAt: newData.createdAt, data: newData.humidity },
-            yHumidDataRef,
-            xHumidDataRef,
-            setHumidLineData
-          );
-          setData(
-            { createdAt: newData.createdAt, data: newData.lightValue },
-            yLightDataRef,
-            xLightDataRef,
-            setLightLineData
-          );
-          setData(
-            {
-              createdAt: newData.createdAt,
-              data: newData.earthMoisture,
-            },
-            yMoiDataRef,
-            xMoiDataRef,
-            setMoiLineData
-          );
-        }
-      });
-    return () => unsubscribe();
   }, []);
 
   return (
@@ -204,7 +195,7 @@ function Dashboard() {
       </div>
       <div className="flex flex-row space-x-4 flex-wrap justify-around">
         <LineChart
-          key={crypto.randomUUID()}
+          key={"temp"}
           width="800px"
           height="400px"
           lineData={tempLineData}
@@ -244,7 +235,7 @@ function Dashboard() {
           }}
         />
         <LineChart
-          key={crypto.randomUUID()}
+          key={"humid"}
           width="800px"
           height="400px"
           lineData={humidLineData}
@@ -284,7 +275,7 @@ function Dashboard() {
           }}
         />
         <LineChart
-          key={crypto.randomUUID()}
+          key={"light"}
           width="800px"
           height="400px"
           lineData={lightLineData}
@@ -324,7 +315,7 @@ function Dashboard() {
           }}
         />
         <LineChart
-          key={crypto.randomUUID()}
+          key={"moisture"}
           width="800px"
           height="400px"
           lineData={moiLineData}
