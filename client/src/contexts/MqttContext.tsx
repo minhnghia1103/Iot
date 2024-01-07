@@ -1,5 +1,8 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, use, useContext, useEffect, useState } from "react";
 import mqtt, { MqttClient } from "mqtt";
+import { Button, TextField } from "@mui/material";
+import Cookies from "js-cookie";
+import { AuthContext } from "./AuthContext";
 
 export const MqttContext = createContext<{
   mqttClient: MqttClient | null;
@@ -14,19 +17,22 @@ export const MqttContext = createContext<{
   mqttUnSub: () => {},
   mqttDisconnect: () => {},
 });
-const ipAddr = "192.168.1.11";
-const brokerUrl = `ws://${ipAddr}:8883`;
 
 export const dataTopic = "esp32/data";
 export const controlTopic = "control";
 export const MqttContextProvider = ({ children }: { children: React.ReactNode }) => {
+  const { logout } = useContext(AuthContext);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
+  const [brokerUrl, setBrokerUrl] = useState<string>(`${Cookies.get("brokerUrl") || "ws://"}`);
   const [mqttClient, setMqttClient] = useState<MqttClient | null>(mqtt.connect(brokerUrl));
-  const [loading, setLoading] = useState(true);
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
+
   useEffect(() => {
     if (mqttClient) {
       mqttClient.on("connect", () => {
         console.log("Connected to MQTT broker at " + brokerUrl);
-        setLoading(false);
+        setIsSuccess(true);
         mqttSub({ topic: dataTopic, qos: 0 });
         mqttSub({ topic: controlTopic, qos: 0 });
       });
@@ -90,7 +96,7 @@ export const MqttContextProvider = ({ children }: { children: React.ReactNode })
       }
     }
   };
-  return !loading ? (
+  return isSuccess ? (
     <MqttContext.Provider
       value={{
         mqttClient,
@@ -103,6 +109,58 @@ export const MqttContextProvider = ({ children }: { children: React.ReactNode })
       {children}
     </MqttContext.Provider>
   ) : (
-    "Loading..."
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+        backgroundColor: "#f5f5f5",
+        gap: "10px",
+      }}
+    >
+      <h1 className="text-2xl font-bold mb-4">Mqtt Broker Url</h1>
+      <TextField
+        label="Input url"
+        variant="outlined"
+        onChange={(event) => {
+          setBrokerUrl(event.target.value);
+        }}
+        sx={{ width: "25ch" }}
+        value={brokerUrl}
+      />
+      <Button
+        variant="outlined"
+        onClick={() => {
+          try {
+            console.log("connecting to broker at " + brokerUrl);
+            setMqttClient(mqtt.connect(brokerUrl));
+            Cookies.set("brokerUrl", brokerUrl, { expires: 1 / 24 }); // Add this line
+          } catch (error: any) {
+            setErrorMessage(error.message);
+            setTimeout(() => {
+              setErrorMessage("");
+            }, 1000);
+          }
+        }}
+        sx={{ width: "25ch" }}
+        color="success"
+      >
+        Click
+      </Button>
+      <Button variant="outlined" onClick={() => logout()} sx={{ width: "25ch" }} color="warning">
+        Logout
+      </Button>
+      <div
+        style={{
+          color: "red",
+          opacity: 0.75,
+          height: "1rem",
+        }}
+      >
+        {errorMessage}
+      </div>
+    </div>
   );
 };

@@ -1,23 +1,21 @@
 "use client";
-// import { UserAuth } from "@/contexts/AuthContext";
+import { AuthContext, AuthContextProvider } from "@/contexts/AuthContext";
 import { useRouter, usePathname } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 function AuthRouterLayout({ children }: { children: React.ReactNode }) {
+  const { user } = useContext(AuthContext);
   const pathname = usePathname();
   const router = useRouter();
-  // const { user } = UserAuth();
-  // console.log("user::", user);
-  // console.log("router::", pathname);
-  // useEffect(() => {
-  //   if (user) {
-  //     if (pathname === "/login") {
-  //       router.push("/dashboard");
-  //     }
-  //   } else {
-  //     router.push("/login");
-  //   }
-  // }, [user]);
-
+  useEffect(() => {
+    if (user && user.id) {
+      if (pathname === "/login") {
+        router.push("/dashboard");
+      }
+    } else {
+      router.push("/login");
+    }
+  }, [user]);
+  console.log("user::", user);
   return <div>{children}</div>;
 }
 

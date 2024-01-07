@@ -14,3 +14,19 @@ export type LineDataType = {
     data: number[];
   }[];
 };
+
+export type UserType = {
+  id: string;
+  username: string;
+};
+
+export type SignInDTO = {
+  gmail: string;
+  password: string;
+};
+
+export type SignUpDTO = {
+  gmail: string;
+  password: string;
+  username: string;
+};

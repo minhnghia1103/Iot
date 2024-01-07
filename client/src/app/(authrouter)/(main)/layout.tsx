@@ -1,7 +1,7 @@
 "use client";
 // import { UserAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -12,8 +12,7 @@ import { usePathname } from "next/navigation";
 import { AppBar, Toolbar, IconButton, Typography, Drawer, List, ListItem, ListItemIcon, ListItemText, Button } from "@mui/material";
 import { MqttContextProvider } from "@/contexts/MqttContext";
 import { DashboardContextProvider } from "@/contexts/DashboardContext";
-import Control from "./control/page";
-import { ControlContextProvider } from "@/contexts/ControlContext";
+import { AuthContext } from "@/contexts/AuthContext";
 const AppBarItems = [
   {
     name: "Dashboard",
@@ -40,7 +39,7 @@ const AppBarItems = [
 function MainLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  // const { logout, user } = UserAuth();
+  const { logout, user } = useContext(AuthContext);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(AppBarItems.findIndex((item) => item.route === pathname));
   const handleDrawerToggle = () => {
@@ -69,83 +68,82 @@ function MainLayout({ children }: { children: React.ReactNode }) {
                 </Typography>
                 <Typography style={{ flexGrow: 1 }} />
 
-                <Typography className="text-xl select-none">
-                  {/* Hello, {user?.displayName} */}
-                  Hello
-                </Typography>
-              </Toolbar>
-            </AppBar>
-            <Drawer
-              open={drawerOpen}
-              onClose={handleDrawerToggle}
-              PaperProps={{
-                style: {
-                  width: "20%",
-                  minWidth: "300px",
-                  maxWidth: "800px",
-                  padding: "2.5rem 0 0 0",
-                },
-              }}
-            >
-              <List
-                className="mt-10 flex flex-col 
+              <Typography className="text-xl select-none">
+                Hello, {user?.username}
+              </Typography>
+            </Toolbar>
+          </AppBar>
+          <Drawer
+            open={drawerOpen}
+            onClose={handleDrawerToggle}
+            PaperProps={{
+              style: {
+                width: "20%",
+                minWidth: "300px",
+                maxWidth: "800px",
+                padding: "2.5rem 0 0 0",
+              },
+            }}
+          >
+            <List
+              className="mt-10 flex flex-col 
 justify-between h-full
 "
-                style={{
-                  padding: "0px",
-                }}
-              >
-                <div>
-                  {AppBarItems.map((item, index) => (
-                    <ListItem
-                      key={index}
-                      className="cursor-pointer select-none transition-all"
-                      onClick={() => {
-                        setSelectedIndex(index);
-                        handleDrawerToggle();
-                        router.push(item.route);
-                      }}
-                      style={{
-                        backgroundColor: selectedIndex == index ? "#22c55e" : "transparent",
-                        color: selectedIndex == index ? "white" : "black",
-                        padding: "1rem",
-                      }}
-                    >
-                      <ListItemIcon
-                        style={{
-                          color: selectedIndex == index ? "white" : "black",
-                        }}
-                      >
-                        {item.icon}
-                      </ListItemIcon>
-                      <ListItemText primary={item.name} />
-                    </ListItem>
-                  ))}
-                </div>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  style={{
-                    borderRadius: "0px",
-                    backgroundColor: "#22c55e",
-                    padding: "0.5rem",
-                  }}
-                  // onClick={logout}
-                >
-                  Sign Out
-                </Button>
-              </List>
-            </Drawer>
-            <div
               style={{
-                marginTop: "3.5rem",
-                padding: "1rem",
+                padding: "0px",
               }}
             >
-              {children}
-            </div>
+              <div>
+                {AppBarItems.map((item, index) => (
+                  <ListItem
+                    key={index}
+                    className="cursor-pointer select-none transition-all"
+                    onClick={() => {
+                      setSelectedIndex(index);
+                      handleDrawerToggle();
+                      router.push(item.route);
+                    }}
+                    style={{
+                      backgroundColor:
+                        selectedIndex == index ? "#22c55e" : "transparent",
+                      color: selectedIndex == index ? "white" : "black",
+                      padding: "1rem",
+                    }}
+                  >
+                    <ListItemIcon
+                      style={{
+                        color: selectedIndex == index ? "white" : "black",
+                      }}
+                    >
+                      {item.icon}
+                    </ListItemIcon>
+                    <ListItemText primary={item.name} />
+                  </ListItem>
+                ))}
+              </div>
+              <Button
+                variant="contained"
+                color="primary"
+                style={{
+                  borderRadius: "0px",
+                  backgroundColor: "#22c55e",
+                  padding: "0.5rem",
+                }}
+                onClick={logout}
+              >
+                Sign Out
+              </Button>
+            </List>
+          </Drawer>
+          <div
+            style={{
+              marginTop: "3.5rem",
+              padding: "1rem",
+            }}
+          >
+            {children}
           </div>
-        </ControlContextProvider>
+        </div>
       </DashboardContextProvider>
     </MqttContextProvider>
   );
