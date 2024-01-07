@@ -9,3 +9,6 @@ const db = admin.firestore();
 export const User = db.collection("Users");
 export const DataEsp32 = db.collection("DataEsp32");
 export const control = db.collection("control");
+export const history = db.collection("history");
+export const user = db.collection("user");
+export const schedule = db.collection("schedule");

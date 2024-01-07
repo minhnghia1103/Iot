@@ -1,8 +1,9 @@
 import express from "express";
 import "./broker/mqtt";
 import { clineData, fromControlEsp32 } from "./broker/subscribe";
-import { control } from "./broker/mqtt";
 import { updateControl } from "./controller/controllerDump";
+import { createUser, login } from "./controller/login";
+import "./cron";
 
 const app = express();
 const cors = require("cors");
@@ -16,5 +17,7 @@ app.use(cookieParser());
 
 clineData();
 fromControlEsp32();
-app.put("/updateControl", updateControl);
+// app.put("/updateControl", updateControl);
+app.post("/register", createUser);
+app.post("/login", login);
 app.listen(8080);
