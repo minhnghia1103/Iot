@@ -13,6 +13,7 @@ import { AppBar, Toolbar, IconButton, Typography, Drawer, List, ListItem, ListIt
 import { MqttContextProvider } from "@/contexts/MqttContext";
 import { DashboardContextProvider } from "@/contexts/DashboardContext";
 import { AuthContext } from "@/contexts/AuthContext";
+import { ControlContextProvider } from "@/contexts/ControlContext";
 const AppBarItems = [
   {
     name: "Dashboard",
@@ -68,82 +69,80 @@ function MainLayout({ children }: { children: React.ReactNode }) {
                 </Typography>
                 <Typography style={{ flexGrow: 1 }} />
 
-              <Typography className="text-xl select-none">
-                Hello, {user?.username}
-              </Typography>
-            </Toolbar>
-          </AppBar>
-          <Drawer
-            open={drawerOpen}
-            onClose={handleDrawerToggle}
-            PaperProps={{
-              style: {
-                width: "20%",
-                minWidth: "300px",
-                maxWidth: "800px",
-                padding: "2.5rem 0 0 0",
-              },
-            }}
-          >
-            <List
-              className="mt-10 flex flex-col 
-justify-between h-full
-"
-              style={{
-                padding: "0px",
+                <Typography className="text-xl select-none">Hello, {user?.username}</Typography>
+              </Toolbar>
+            </AppBar>
+            <Drawer
+              open={drawerOpen}
+              onClose={handleDrawerToggle}
+              PaperProps={{
+                style: {
+                  width: "20%",
+                  minWidth: "300px",
+                  maxWidth: "800px",
+                  padding: "2.5rem 0 0 0",
+                },
               }}
             >
-              <div>
-                {AppBarItems.map((item, index) => (
-                  <ListItem
-                    key={index}
-                    className="cursor-pointer select-none transition-all"
-                    onClick={() => {
-                      setSelectedIndex(index);
-                      handleDrawerToggle();
-                      router.push(item.route);
-                    }}
-                    style={{
-                      backgroundColor:
-                        selectedIndex == index ? "#22c55e" : "transparent",
-                      color: selectedIndex == index ? "white" : "black",
-                      padding: "1rem",
-                    }}
-                  >
-                    <ListItemIcon
+              <List
+                className="mt-10 flex flex-col 
+justify-between h-full
+"
+                style={{
+                  padding: "0px",
+                }}
+              >
+                <div>
+                  {AppBarItems.map((item, index) => (
+                    <ListItem
+                      key={index}
+                      className="cursor-pointer select-none transition-all"
+                      onClick={() => {
+                        setSelectedIndex(index);
+                        handleDrawerToggle();
+                        router.push(item.route);
+                      }}
                       style={{
+                        backgroundColor: selectedIndex == index ? "#22c55e" : "transparent",
                         color: selectedIndex == index ? "white" : "black",
+                        padding: "1rem",
                       }}
                     >
-                      {item.icon}
-                    </ListItemIcon>
-                    <ListItemText primary={item.name} />
-                  </ListItem>
-                ))}
-              </div>
-              <Button
-                variant="contained"
-                color="primary"
-                style={{
-                  borderRadius: "0px",
-                  backgroundColor: "#22c55e",
-                  padding: "0.5rem",
-                }}
-                onClick={logout}
-              >
-                Sign Out
-              </Button>
-            </List>
-          </Drawer>
-          <div
-            style={{
-              marginTop: "3.5rem",
-              padding: "1rem",
-            }}
-          >
-            {children}
+                      <ListItemIcon
+                        style={{
+                          color: selectedIndex == index ? "white" : "black",
+                        }}
+                      >
+                        {item.icon}
+                      </ListItemIcon>
+                      <ListItemText primary={item.name} />
+                    </ListItem>
+                  ))}
+                </div>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  style={{
+                    borderRadius: "0px",
+                    backgroundColor: "#22c55e",
+                    padding: "0.5rem",
+                  }}
+                  onClick={logout}
+                >
+                  Sign Out
+                </Button>
+              </List>
+            </Drawer>
+            <div
+              style={{
+                marginTop: "3.5rem",
+                padding: "1rem",
+              }}
+            >
+              {children}
+            </div>
           </div>
-        </div>
+        </ControlContextProvider>
       </DashboardContextProvider>
     </MqttContextProvider>
   );

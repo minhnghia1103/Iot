@@ -4,6 +4,7 @@ import WbSunnyIcon from "@mui/icons-material/WbSunny";
 import WaterDropIcon from "@mui/icons-material/WaterDrop";
 import { MqttContext } from "./MqttContext";
 import mqtt from "mqtt";
+import { AuthContext } from "./AuthContext";
 
 export const ControlContext = React.createContext({} as any);
 export const controlData = [
@@ -18,6 +19,8 @@ export const ControlContextProvider = ({ children }: { children: React.ReactNode
   console.log("allSwitchesState", allSwitchesState);
   const [autoSwitchesState, setAutoSwitchesState] = useState<Record<number, boolean>>(controlData.reduce((acc, _, index) => ({ ...acc, [index]: false }), {}));
   console.log("autoSwitchesState", autoSwitchesState);
+  const { user } = useContext(AuthContext);
+  console.log("user", user);
   const handleSwitchChange = (index: number, setState: Dispatch<SetStateAction<Record<number, boolean>>>) => {
     setState((prevState) => ({
       ...prevState,
@@ -27,7 +30,7 @@ export const ControlContextProvider = ({ children }: { children: React.ReactNode
     const data = {
       topic: "control",
       payload: {
-        name: "nghia",
+        name: user?.username,
         ledMode: convertTo01(index === 0 && setState === setAllSwitchesState ? !allSwitchesState[index] : allSwitchesState[0]),
         pumpMode: convertTo01(index === 1 && setState === setAllSwitchesState ? !allSwitchesState[index] : allSwitchesState[1]),
         ledAutoMode: convertTo01(index === 0 && setState === setAutoSwitchesState ? !autoSwitchesState[index] : autoSwitchesState[0]),

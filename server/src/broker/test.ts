@@ -9,7 +9,7 @@ client.on("connect", () => {
   console.log("Connected to MQTT broker");
   const data = {
     name: "nghia",
-    ledMode: 0,
+    ledMode: 1,
     pumpMode: 0,
     ledAutoMode: 0,
     pumpAutoMode: 0,
