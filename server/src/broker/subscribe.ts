@@ -1,5 +1,7 @@
 import mqtt from "mqtt";
 import { getIPAddress } from "./func";
+import { createData } from "../controller/fromDataESPToDb";
+import { updateControl } from "../controller/controllerDump";
 
 const brokerUrl = `mqtt://${getIPAddress()}`;
 const topicfromEsp32 = "esp32/data";

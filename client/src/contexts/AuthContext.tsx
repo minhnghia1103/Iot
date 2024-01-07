@@ -5,7 +5,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { SignInDTO, SignUpDTO, UserType } from "@/utils/type";
 import Cookies from "js-cookie";
-const AuthContext = createContext<{
+export const AuthContext = createContext<{
   user: UserType | null;
   signIn: (signInDto: SignInDTO) => void;
   signUp: (signUpDto: SignUpDTO) => void;
@@ -23,70 +23,59 @@ export const AuthContextProvider = ({
   children: React.ReactNode;
 }) => {
   const [user, setUser] = useState<UserType | null>(null);
-  const [loading, setLoading] = useState(true);
   const router = useRouter();
-
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const signIn = async (signInDto: SignInDTO) => {
-    try {
-      const res = await signInRequest(signInDto);
-      setUser(res.user);
-      Cookies.set("user", JSON.stringify(res.user), { expires: 1 }); // Add this line
-      router.push("/dashboard");
-    } catch (error) {
-      console.log(error);
-    }
+    const res = await signInRequest(signInDto);
+    console.log("res::", res);
+    setUser(res.payload);
+    Cookies.set("uid", res.payload.id, { expires: 1 / 12 });
+    Cookies.set("username", res.payload.username, { expires: 1 / 12 });
   };
   const logout = async () => {
     try {
-      Cookies.remove("user");
-      router.push("/login");
+      Cookies.remove("uid");
+      Cookies.remove("username");
       setUser(null);
     } catch (error) {
       console.log(error);
     }
   };
   const signUp = async (signUpDto: SignUpDTO) => {
-    try {
-      const res = await signUpRequest(signUpDto);
-      setUser(res.user);
-      Cookies.set("user", JSON.stringify(res.user), { expires: 1 }); // Add this line
-      router.push("/dashboard");
-    } catch (error) {
-      console.log(error);
-    }
+    await signUpRequest(signUpDto);
+    router.push("/login");
   };
 
   useEffect(() => {
-    const userCookie = Cookies.get("user");
-    if (userCookie) {
-      const user = JSON.parse(userCookie);
-      if (user && user.fullName && user.email) {
-        setUser(user);
-        setLoading(false);
-      }
+    const uid = Cookies.get("uid");
+    const username = Cookies.get("username");
+    console.log("uid::", uid);
+    if (uid && username) {
+      setUser({ id: uid, username });
     }
+    setIsLoaded(true);
   }, []);
-  return (
-    !loading && (
-      <AuthContext.Provider value={{ user, signIn, signUp, logout }}>
-        {children}
-      </AuthContext.Provider>
-    )
+  return isLoaded ? (
+    <AuthContext.Provider value={{ user, signIn, signUp, logout }}>
+      {children}
+    </AuthContext.Provider>
+  ) : (
+    ""
   );
 };
 
 const signInRequest = async (signInDto: SignInDTO) => {
   try {
-    const res = await fetch("/api/auth/login", {
+    const res = await fetch("http://localhost:8080/login", {
       method: "POST",
-      body: JSON.stringify({ ...signInDto }),
+      body: JSON.stringify(signInDto),
       headers: {
         "Content-Type": "application/json",
       },
     });
+    console.log("res::", res);
     if (res.ok) {
-      const data = await res.json();
-      return data;
+      return await res.json();
     } else {
       throw new Error("Something went wrong");
     }
@@ -97,13 +86,14 @@ const signInRequest = async (signInDto: SignInDTO) => {
 
 const signUpRequest = async (signUpDto: SignUpDTO) => {
   try {
-    const res = await fetch("/api/auth/register", {
+    const res = await fetch("http://localhost:8080/register", {
       method: "POST",
-      body: JSON.stringify({ ...signUpDto }),
+      body: JSON.stringify(signUpDto),
       headers: {
         "Content-Type": "application/json",
       },
     });
+    console.log("res::", res);
     if (res.ok) {
       const data = await res.json();
       return data;

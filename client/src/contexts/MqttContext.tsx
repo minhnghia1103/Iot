@@ -1,7 +1,14 @@
-import React, { createContext, use, useEffect, useState } from "react";
+import React, {
+  createContext,
+  use,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import mqtt, { MqttClient } from "mqtt";
 import { Button, TextField } from "@mui/material";
 import Cookies from "js-cookie";
+import { AuthContext } from "./AuthContext";
 
 export const MqttContext = createContext<{
   mqttClient: MqttClient | null;
@@ -24,6 +31,7 @@ export const MqttContextProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
+  const { logout } = useContext(AuthContext);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const [brokerUrl, setBrokerUrl] = useState<string>(
@@ -152,6 +160,14 @@ export const MqttContextProvider = ({
         color="success"
       >
         Click
+      </Button>
+      <Button
+        variant="outlined"
+        onClick={() => logout()}
+        sx={{ width: "25ch" }}
+        color="warning"
+      >
+        Logout
       </Button>
       <div
         style={{

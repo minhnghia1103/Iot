@@ -1,15 +1,24 @@
 "use client";
 
+import { AuthContext } from "@/contexts/AuthContext";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Button, IconButton, InputAdornment, TextField } from "@mui/material";
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useContext, useEffect, useState } from "react";
 // import { UserAuth } from "@/contexts/AuthContext";
 function Login() {
-  // const { googleSignIn } = UserAuth();
+  const router = useRouter();
+  const { signIn, user } = useContext(AuthContext);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword(!showPassword);
-
+  useEffect(() => {
+    if (user && user.id) {
+      router.push("/dashboard");
+    }
+  }, [user]);
   return (
     <div className="p-12 bg-white rounded shadow-xl w-1/3 bg-opacity-85">
       <h1 className="text-3xl font-bold mb-4">Login</h1>
@@ -20,6 +29,7 @@ function Login() {
         style={{
           marginBottom: "1rem",
         }}
+        onChange={(e) => setEmail(e.target.value)}
       />
       <TextField
         className="w-full"
@@ -29,6 +39,7 @@ function Login() {
         style={{
           marginBottom: "1rem",
         }}
+        onChange={(e) => setPassword(e.target.value)}
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
@@ -48,6 +59,12 @@ function Login() {
           color: "black",
           backgroundColor: "white",
           padding: "0.5rem",
+        }}
+        onClick={() => {
+          signIn({
+            gmail: email,
+            password: password,
+          });
         }}
       >
         Login

@@ -16,6 +16,17 @@ export type LineDataType = {
 };
 
 export type UserType = {
-  fullname: string;
-  accessToken: string;
+  id: string;
+  username: string;
+};
+
+export type SignInDTO = {
+  gmail: string;
+  password: string;
+};
+
+export type SignUpDTO = {
+  gmail: string;
+  password: string;
+  username: string;
 };

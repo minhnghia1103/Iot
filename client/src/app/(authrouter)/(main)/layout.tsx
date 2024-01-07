@@ -1,7 +1,7 @@
 "use client";
 // import { UserAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -23,6 +23,7 @@ import {
 } from "@mui/material";
 import { MqttContextProvider } from "@/contexts/MqttContext";
 import { DashboardContextProvider } from "@/contexts/DashboardContext";
+import { AuthContext } from "@/contexts/AuthContext";
 const AppBarItems = [
   {
     name: "Dashboard",
@@ -49,7 +50,7 @@ const AppBarItems = [
 function MainLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  // const { logout, user } = UserAuth();
+  const { logout, user } = useContext(AuthContext);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(
     AppBarItems.findIndex((item) => item.route === pathname)
@@ -85,8 +86,7 @@ function MainLayout({ children }: { children: React.ReactNode }) {
               <Typography style={{ flexGrow: 1 }} />
 
               <Typography className="text-xl select-none">
-                {/* Hello, {user?.displayName} */}
-                Hello
+                Hello, {user?.username}
               </Typography>
             </Toolbar>
           </AppBar>
@@ -146,7 +146,7 @@ justify-between h-full
                   backgroundColor: "#22c55e",
                   padding: "0.5rem",
                 }}
-                // onClick={logout}
+                onClick={logout}
               >
                 Sign Out
               </Button>
