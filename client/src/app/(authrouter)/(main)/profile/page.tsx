@@ -1,4 +1,3 @@
-/* Dashboard.jsx */
 "use client";
 import React, { useContext } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
@@ -13,3 +12,6 @@ function Dashboard() {
 }
 
 export default Dashboard;
+
+
+
