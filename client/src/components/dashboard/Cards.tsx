@@ -138,7 +138,7 @@ const BasicCard = ({
         </Typography>
       </CardContent>
       <CardActions className="flex flex-row justify-between">
-        <Button size="small">View History</Button>
+        {/* <Button size="small">View History</Button> */}
         <div className="text-xs select-none opacity-75">{fromTime}</div>
       </CardActions>
     </Card>

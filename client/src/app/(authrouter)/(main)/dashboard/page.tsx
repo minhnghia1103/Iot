@@ -5,7 +5,7 @@ import { LineCharts } from "@/components/dashboard/LineCharts";
 
 function Dashboard() {
   return (
-    <div className="flex flex-col space-y-6 items-center">
+    <div className="flex flex-col space-y-8 items-center">
       <DbCards />
       <LineCharts />
     </div>

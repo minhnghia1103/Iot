@@ -46,9 +46,8 @@ function History() {
             return {
               name: data.name,
               activity: data.message,
-              createdAt: `${date.getDate()}-${
-                date.getMonth() + 1
-              }-${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`,
+              createdAt: `${date.getDate()}-${date.getMonth() + 1
+                }-${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`,
             };
           }
         );
@@ -68,9 +67,8 @@ function History() {
             avgHumidity: data.avgHumidity,
             avgLightValue: data.avgLightValue,
             avgTemperature: data.avgTemperature,
-            createdAt: `${date.getDate()}-${
-              date.getMonth() + 1
-            }-${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`,
+            createdAt: `${date.getDate()}-${date.getMonth() + 1
+              }-${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`,
           };
         });
 
@@ -106,7 +104,7 @@ function History() {
   };
 
   return (
-    <div style={{ margin: "10px auto", padding: "40px", maxWidth: "1150px", backgroundColor: "#FFFFCC"}}>
+    <div style={{ margin: "10px auto", padding: "40px", maxWidth: "1150px", backgroundColor: "#FFFFCC" }}>
       <Paper style={{ marginBottom: "20px" }}>
         <TableContainer>
           <Table
@@ -136,7 +134,9 @@ function History() {
                   <TableRow key={index}>
                     <TableCell>{row.name}</TableCell>
                     <TableCell>{row.activity}</TableCell>
-                    <TableCell>{row.createdAt}</TableCell>
+                    <TableCell>                
+                      <span className="text-sm text-gray-600">{row.createdAt}</span>
+                    </TableCell>
                   </TableRow>
                 ))}
             </TableBody>
@@ -183,11 +183,25 @@ function History() {
                 .slice(sensorPage * sensorRowsPerPage, sensorPage * sensorRowsPerPage + sensorRowsPerPage)
                 .map((row, index) => (
                   <TableRow key={index}>
-                    <TableCell>{row.avgEarthMoisture.toFixed(2)}</TableCell>
-                    <TableCell>{row.avgHumidity.toFixed(2)}</TableCell>
-                    <TableCell>{row.avgLightValue.toFixed(2)}</TableCell>
-                    <TableCell>{row.avgTemperature.toFixed(2)}</TableCell>
-                    <TableCell>{row.createdAt}</TableCell>
+                    <TableCell>
+                      <span className="text-l mr-1">{row.avgEarthMoisture.toFixed(2)}</span>
+                      <span className="text-sm">%</span>
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-l mr-1">{row.avgHumidity.toFixed(2)}</span>
+                      <span className="text-sm">%</span>
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-l mr-1">{row.avgLightValue.toFixed(2)}</span>
+                      <span className="text-sm">lux</span>
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-l mr-1">{row.avgTemperature.toFixed(2)}</span>
+                      <span className="text-sm">%</span>
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-sm text-gray-600">{row.createdAt}</span>
+                    </TableCell>
                   </TableRow>
                 ))}
             </TableBody>

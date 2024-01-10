@@ -55,8 +55,8 @@ function MainLayout({ children }: { children: React.ReactNode }) {
             <AppBar
               position="fixed"
               sx={{
-                backgroundColor: "#22c55e",
-                padding: "0.25rem 0 0.25rem 0 ",
+                backgroundColor: "#00DD00",
+                padding: "0.5rem 0 0.5rem 0 ",
                 height: "3.5rem",
               }}
             >
@@ -69,7 +69,7 @@ function MainLayout({ children }: { children: React.ReactNode }) {
                 </Typography>
                 <Typography style={{ flexGrow: 1 }} />
 
-                <Typography className="text-xl select-none">Hello, {user?.username}</Typography>
+                <Typography className="text-xl select-none font-bold text-white ">Hello, {user?.username}</Typography>
               </Toolbar>
             </AppBar>
             <Drawer
